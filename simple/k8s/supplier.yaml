@@ -1,10 +1,29 @@
-apiVersion: v1
-kind: Pod
+apiVersion: apps/v1
+kind: Deployment
 metadata:
   name: simple-supplier
-  labels:
-    app: supplier
 spec:
-  containers:
-    - name: supplier
-      image: k8s-supplier:v1
+  selector:
+    matchLabels:
+      app: supplier
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: supplier
+    spec:
+      containers:
+        - name: supplier
+          image: k8s-supplier:v1
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: supplier
+spec:
+  selector:
+    app: supplier
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
